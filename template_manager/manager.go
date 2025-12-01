@@ -25,6 +25,7 @@ type Name string
 type Manager struct{ t *template.Template }
 
 // NewManagerFromFS parses templates from any fs.FS matching pattern.
+// Templates are registered with their full relative path as the name.
 func NewManagerFromFS(fsys fs.FS, pattern string) (*Manager, error) {
 	t := template.New("rum")
 	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
@@ -40,7 +41,8 @@ func NewManagerFromFS(fsys fs.FS, pattern string) (*Manager, error) {
 		if rerr != nil {
 			return rerr
 		}
-		_, perr := t.New(filepath.Base(path)).Parse(string(b))
+		// Use full relative path as template name
+		_, perr := t.New(path).Parse(string(b))
 		return perr
 	})
 

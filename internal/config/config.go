@@ -22,15 +22,12 @@ type Config struct {
 
 // TemplatesConfig holds configuration for template generation.
 type TemplatesConfig struct {
-	OutputFile    string           `yaml:"output_file"`
-	OutputPackage string           `yaml:"output_package"`
-	Sources       []TemplateSource `yaml:"sources"`
-}
-
-// TemplateSource defines a template source directory and pattern.
-type TemplateSource struct {
-	Path    string `yaml:"path"`
-	Pattern string `yaml:"pattern"`
+	// Root is the directory where templates_gen.go will be generated
+	// Templates dirs are relative to this root
+	Root    string `yaml:"root"`
+	Package string `yaml:"package"`
+	// Dirs contains glob patterns for template directories (e.g., "templates/**/*.tmpl")
+	Dirs []string `yaml:"dirs"`
 }
 
 // Load reads and parses the rum.yaml configuration file.
@@ -57,5 +54,5 @@ func Load(path string) (*Config, error) {
 
 // HasTemplates returns true if templates configuration is present.
 func (c *Config) HasTemplates() bool {
-	return c.Templates != nil && len(c.Templates.Sources) > 0
+	return c.Templates != nil && len(c.Templates.Dirs) > 0
 }

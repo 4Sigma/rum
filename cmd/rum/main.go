@@ -41,11 +41,20 @@ code for all configured components (templates, services, etc.).
 Example rum.yaml:
 
   templates:
-    output_file: "internal/templates/templates_gen.go"
-    output_package: "templates"
-    sources:
-      - path: "templates/"
-        pattern: "*.html.tmpl"
+    root: "."                        # where templates_gen.go is generated
+    package: "main"                  # package name
+    dirs:
+      - "templates/**/*.tmpl"        # recursive glob pattern
+
+Example structure:
+  myproject/
+  ├── templates/
+  │   ├── openapi/
+  │   │   └── api.yaml.tmpl
+  │   └── pages/
+  │       └── home.html.tmpl
+  ├── templates_gen.go               # generated
+  └── rum.yaml
 
 Usage with go:generate:
   Add this comment to any Go file:
@@ -107,17 +116,13 @@ func runInit(cmd *cobra.Command, args []string) error {
 
 # Template generation configuration
 templates:
-  # Output file for generated code
-  output_file: "internal/templates_manager/templates_gen.go"
+  # Root directory where templates_gen.go will be generated
+  root: "."
   # Package name for generated code
-  output_package: "templates_manager"
-  # Template sources
-  sources:
-    - path: "templates/"
-      pattern: "*.tmpl"
-    # Add more sources as needed:
-    # - path: "templates/emails/"
-    #   pattern: "*.html.tmpl"
+  package: "main"
+  # Template directories (glob patterns, supports **)
+  dirs:
+    - "templates/**/*.tmpl"
 
 # Future components (not yet implemented):
 # services:
